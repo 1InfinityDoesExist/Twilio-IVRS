@@ -48,7 +48,7 @@ public class IVRSServiceImpl {
 	public static final String AUTH_TOKEN = "b49e985fc6dd50810f14ffd676fa67f1";
 
 	String from = "+18588081170";
-	String to = "+918127711994";
+	String to = "+917903262528";
 
 	public void doPost(HttpServletRequest servletRequest, HttpServletResponse servletResponse) throws IOException,
 			URISyntaxException, InterruptedException, UnirestException, PlivoXmlException, PlivoValidationException {
