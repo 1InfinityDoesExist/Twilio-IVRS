@@ -128,7 +128,7 @@ public class IVRSServiceImpl {
 		return new VoiceResponse.Builder()
 				.gather(new Gather.Builder().numDigits(1)
 						.say(new Say.Builder("For sales, press 1. For support, press 2.").build()).build())
-				.redirect(new Redirect.Builder("https://sengagement.herokuapp.com/multilevelivr/").build()).build();
+				.redirect(new Redirect.Builder("/multilevelivr/").build()).build();
 
 	}
 
