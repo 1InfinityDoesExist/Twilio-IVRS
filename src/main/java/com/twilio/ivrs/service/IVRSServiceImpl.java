@@ -45,7 +45,7 @@ public class IVRSServiceImpl {
 	String WrongInput = "Sorry, that's not a valid input";
 
 	public static final String ACCOUNT_SID = "ACe26536586ee5bd01fee8b547216daf12";
-	public static final String AUTH_TOKEN = "b49e985fc6dd50810f14ffd676fa67f1";
+	public static final String AUTH_TOKEN = "d144965c634727715acb3098cac081e1";
 
 	String from = "+18588081170";
 	String to = "+917903262528";
@@ -64,11 +64,12 @@ public class IVRSServiceImpl {
 		String statusGet = "https://api.twilio.com/2010-04-01/Accounts/ACe26536586ee5bd01fee8b547216daf12/Calls/test.json";
 		statusGet = statusGet.replace("test", call.getSid());
 
+		log.info("----------Account sid : {}", call.getSid());
 		String stat = "";
 		while (!stat.equalsIgnoreCase(Status.IN_PROGRESS.toString())) {
 			Unirest.setTimeouts(0, 0);
 			HttpResponse<String> res = Unirest.get(statusGet).header("Authorization",
-					"Basic QUNlMjY1MzY1ODZlZTViZDAxZmVlOGI1NDcyMTZkYWYxMjpiNDllOTg1ZmM2ZGQ1MDgxMGYxNGZmZDY3NmZhNjdmMQ==")
+					"Basic QUNlMjY1MzY1ODZlZTViZDAxZmVlOGI1NDcyMTZkYWYxMjpkMTQ0OTY1YzYzNDcyNzcxNWFjYjMwOThjYWMwODFlMQ==")
 					.asString();
 
 			JSONObject jsonObject = null;
