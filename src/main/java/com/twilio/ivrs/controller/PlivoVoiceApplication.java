@@ -14,6 +14,9 @@ import com.plivo.api.xml.Number;
 import com.plivo.api.xml.Response;
 import com.plivo.api.xml.Speak;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 public class PlivoVoiceApplication {
 
@@ -28,10 +31,11 @@ public class PlivoVoiceApplication {
 
 	@GetMapping(value = "/multilevelivr/", produces = { "application/xml" })
 	public Response getInput() {
+		log.info("---------PlivoVoiceApplication Class, getInput method -----------");
 		Response response;
 		try {
-			response = new Response()
-					.children(new GetInput().action("http://localhost:8900/multilevelivr/firstbranch/").method("POST")
+			response = new Response().children(
+					new GetInput().action("https://sengagement.herokuapp.com/multilevelivr/firstbranch/").method("POST")
 							.inputType("dtmf").digitEndTimeout(5).redirect(true).children(new Speak(WelcomeMessage)))
 					.children(new Speak(NoInput));
 			System.out.println(response.toXmlString());
@@ -47,7 +51,7 @@ public class PlivoVoiceApplication {
 	@RequestMapping(value = "/multilevelivr/firstbranch/", method = RequestMethod.POST, produces = {
 			"application/xml" })
 	public Response speak(@RequestParam("Digits") String digit) throws PlivoXmlException, PlivoValidationException {
-		System.out.println("Digit pressed:" + digit);
+		log.info("--------Digit pressed: {} ", digit);
 		Response response = new Response();
 		if (digit.equals("1")) {
 			try {
@@ -65,9 +69,9 @@ public class PlivoVoiceApplication {
 			}
 		} else if (digit.equals("3")) {
 			try {
-				response.children(new GetInput().action("http://localhost:9200/multilevelivr/second/").method("POST")
-						.inputType("dtmf").digitEndTimeout(5).redirect(true).children(new Speak(RepresentativeBranch)))
-						.children(new Speak(NoInput));
+				response.children(new GetInput().action("https://sengagement.herokuapp.com/multilevelivr/second/")
+						.method("POST").inputType("dtmf").digitEndTimeout(5).redirect(true)
+						.children(new Speak(RepresentativeBranch))).children(new Speak(NoInput));
 			} catch (PlivoValidationException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -82,13 +86,13 @@ public class PlivoVoiceApplication {
 	@RequestMapping(value = "/multilevelivr/second/", produces = { "application/xml" }, method = RequestMethod.POST)
 	public Response callforward(@RequestParam("Digits") String digit, @RequestParam("From") String from_number)
 			throws PlivoXmlException, PlivoValidationException {
-		System.out.println("Digit pressed:" + digit);
+		log.info("--------Digit pressed: {}", digit);
 		Response response = new Response();
 		if (digit.equals("1")) {
-			response.children(new Dial().action("https://<ngrok_identifier>.ngrok.io/multilevelivr/action/")
+			response.children(new Dial().action("https://sengagement.herokuapp.com/multilevelivr/action/")
 					.method("POST").redirect(false).children(new Number("<number_1>")));
 		} else if (digit.equals("2")) {
-			response.children(new Dial().action("https://<ngrok_identifier>.ngrok.io/multilevelivr/action/")
+			response.children(new Dial().action("https://sengagement.herokuapp.com/multilevelivr/action/")
 					.method("POST").redirect(false).children(new Number("<number_2>")));
 		} else {
 			response.children(new Speak(WrongInput));

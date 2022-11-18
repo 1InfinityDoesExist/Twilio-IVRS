@@ -16,7 +16,6 @@ import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import com.plivo.api.exceptions.PlivoValidationException;
 import com.plivo.api.exceptions.PlivoXmlException;
-import com.plivo.api.xml.Response;
 import com.twilio.Twilio;
 import com.twilio.http.HttpMethod;
 import com.twilio.rest.api.v2010.account.Call;
@@ -30,6 +29,9 @@ import com.twilio.twiml.voice.Say;
 import com.twilio.type.PhoneNumber;
 import com.twilio.type.Twiml;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class IVRSServiceImpl {
 
@@ -51,12 +53,12 @@ public class IVRSServiceImpl {
 	public void doPost(HttpServletRequest servletRequest, HttpServletResponse servletResponse) throws IOException,
 			URISyntaxException, InterruptedException, UnirestException, PlivoXmlException, PlivoValidationException {
 
+		log.info("---------IVRSServiceImpl class, doPost methd : -------");
 		Twilio.init(ACCOUNT_SID, AUTH_TOKEN);
 
 		VoiceResponse response = getPlanets();
 		// Response resp = getPlanet();
 
-		System.out.println("+++++++++++++++" + response.toXml());
 		Call call = Call.creator(new PhoneNumber(to), new PhoneNumber(from), new Twiml(response.toXml())).create();
 
 		String statusGet = "https://api.twilio.com/2010-04-01/Accounts/ACe26536586ee5bd01fee8b547216daf12/Calls/test.json";
@@ -72,8 +74,6 @@ public class IVRSServiceImpl {
 			JSONObject jsonObject = null;
 			try {
 				jsonObject = (JSONObject) new JSONParser().parse(res.getBody());
-
-				System.out.println(jsonObject.get("status"));
 				stat = (String) jsonObject.get("status");
 			} catch (ParseException e1) {
 				// TODO Auto-generated catch block
@@ -122,17 +122,12 @@ public class IVRSServiceImpl {
 //				.gather(new Gather.Builder().debug(true).numDigits(1).timeout(50)
 //						.action("http://127.0.0.1:9200/multilevelivr/").method(HttpMethod.GET).build())
 //				.build();
-		
-		
+
+		log.info("-------IVRSServiceImpl Class, getPlanets method-----");
 		return new VoiceResponse.Builder()
-        .gather(
-                new Gather.Builder()
-                        .numDigits(1)
-                        .say(new Say.Builder("For sales, press 1. For support, press 2.").build())
-                        .build()
-        )
-        .redirect(new Redirect.Builder("http://127.0.0.1:8900/multilevelivr/").build())
-        .build();
+				.gather(new Gather.Builder().numDigits(1)
+						.say(new Say.Builder("For sales, press 1. For support, press 2.").build()).build())
+				.redirect(new Redirect.Builder("https://sengagement.herokuapp.com/multilevelivr/").build()).build();
 
 	}
 
