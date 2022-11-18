@@ -15,6 +15,9 @@ import com.plivo.api.exceptions.PlivoValidationException;
 import com.plivo.api.exceptions.PlivoXmlException;
 import com.twilio.ivrs.service.IVRSServiceImpl;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @RestController
 public class HelperController {
 
@@ -24,6 +27,7 @@ public class HelperController {
 	@GetMapping("/test")
 	public void testing(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
+		log.info("---------HelperController Class, testing method-------");
 		try {
 			try {
 				ivrSServiceImpl.doPost(request, response);
